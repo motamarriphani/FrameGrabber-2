@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Frame Grabber Settings</title>
+    <link rel="stylesheet" href="popup.css">
+</head>
+<body>
+    <h1>Frame Grabber Settings</h1>
+
+    <!-- Image Type Selection Section -->
+    <section>
+        <h2>Image Type</h2>
+        <input type="radio" id="jpeg" name="imageType" value="jpeg">
+        <label for="jpeg">JPEG</label><br>
+        <input type="radio" id="png" name="imageType" value="png">
+        <label for="png">PNG</label><br>
+    </section>
+
+    <!-- Save Location Setting Section -->
+    <section>
+        <h2>Save Location</h2>
+        <label for="saveLocation">Save Location:</label>
+        <input type="text" id="saveLocation" name="saveLocation">
+    </section>
+    
+    <button id="saveSettings">Save Settings</button>
+    <script src="popup.js"></script>
+</body>
+</html>

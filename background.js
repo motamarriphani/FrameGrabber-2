@@ -5,6 +5,26 @@
  * Expects a message with action: "downloadFrame" and data containing
  * the imageDataUrl, filename.
  */
+
+// This is for user file preference.
+const getUserFilePreference = () => {
+  return new Promise((resolve) => {
+    chrome.storage.local.get(['filePreference'], (result) => {
+      resolve(result.filePreference || 'png'); // Default to 'png' if not set
+    });
+  });
+};
+
+
+// This is for reading the save location.
+const getSaveLocation = () => {
+  return new Promise((resolve) => {
+    chrome.storage.local.get(['saveLocation'], (result) => {
+      resolve(result.saveLocation || ''); // Default to empty if not set
+    });
+  });
+};
+
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     if (request.action === "downloadFrame") {
       console.log("Background script received download request:", request); // For debugging
