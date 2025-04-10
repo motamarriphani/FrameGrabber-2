@@ -1,6 +1,6 @@
 {
     "manifest_version": 3,
-    "name": "YouTube Frame Grabber",
+    "name": "YouTube FrameGrabber2",
     "version": "1.0",
     "description": "Captures the current frame of a YouTube video and downloads it as a PNG image.",
     "icons": {
