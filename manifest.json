@@ -1,0 +1,50 @@
+{
+    "manifest_version": 3,
+    "name": "YouTube Frame Grabber",
+    "version": "1.0",
+    "description": "Captures the current frame of a YouTube video and downloads it as a PNG image.",
+    "icons": {
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
+    },
+    "permissions": [
+      "downloads", // Required to save the captured frame
+      "scripting", // Required to inject content script
+      "activeTab"  // Grants temporary access to the active tab when invoked (alternative to host_permissions)
+      // Note: We initially planned host_permissions for youtube.com, but activeTab + scripting is often preferred
+      // If button injection needs to happen automatically on load without user clicking the extension icon,
+      // you would need host_permissions: ["*://*.youtube.com/*"] and use content_scripts instead of scripting API.
+      // For this MVP, let's stick to activeTab/scripting and trigger via an action click or modify content.js to run automatically.
+      // Let's refine this to use content_scripts for automatic button injection as per PRD FR3.
+    ],
+     "host_permissions": [
+       "*://*.youtube.com/watch*" // Allow script injection only on YouTube watch pages
+     ],
+    "background": {
+      "service_worker": "background.js" // Handles downloads
+    },
+    "content_scripts": [
+      {
+        "matches": ["*://*.youtube.com/watch*"], // Run only on YouTube watch pages
+        "js": ["content.js"],
+        "css": ["style.css"] // Inject styles for the button
+      }
+    ],
+    "web_accessible_resources": [
+      {
+        "resources": ["icons/capture_icon.png"], // Make icon accessible to content script if needed
+        "matches": ["*://*.youtube.com/*"]
+      }
+    ]
+    // If using the toolbar icon as a trigger instead of injecting a button:
+    // "action": {
+    //   "default_popup": "popup.html", // Optional: if you want a popup UI
+    //   "default_icon": {
+    //     "16": "icons/icon16.png",
+    //     "48": "icons/icon48.png"
+    //   },
+    //   "default_title": "Grab YouTube Frame"
+    // }
+  }
+  

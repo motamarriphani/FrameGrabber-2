@@ -1,0 +1,27 @@
+/* style.css - Basic styling for the injected button */
+
+.yt-frame-grabber-button {
+    /* Add some specific styling if needed */
+    /* Example: Adjust margin, add an icon, etc. */
+    margin-right: 8px; /* Add some space next to the settings button */
+    /* Vertically align with other buttons if needed */
+    vertical-align: top;
+    /* You could use a background image for an icon */
+    /* background-image: url('chrome-extension://__MSG_@@extension_id__/icons/capture_icon.png'); */
+    /* background-repeat: no-repeat; */
+    /* background-position: center; */
+    /* background-size: contain; */ /* or specific size */
+    /* color: transparent; */ /* Hide text if using icon */
+    /* width: 36px; */ /* Adjust size if using icon */
+    /* height: 36px; */ /* Adjust size if using icon */
+    padding: 0 10px; /* Add padding if using text */
+    font-size: 13px; /* Match YT font size */
+    font-weight: 500; /* Match YT font weight */
+  }
+  
+  /* Optional: Style for feedback states */
+  .yt-frame-grabber-button:disabled {
+    opacity: 0.7;
+    cursor: wait;
+  }
+  
