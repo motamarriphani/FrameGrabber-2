@@ -1,40 +1,74 @@
-// Function to save settings to local storage
-function saveSettings() {
-    // Get the selected image type
-    const imageType = document.querySelector('input[name="imageType"]:checked').value;
-    // Get the save location
-    const saveLocation = document.getElementById('saveLocation').value;
+const DEFAULT_SETTINGS = {
+    imageType: 'png',
+    saveLocation: '',
+    filenameTemplate: '{title}_frame_{time}',
+    jpegQuality: 0.92,
+    saveAs: false
+};
 
-    // Save to local storage
-    localStorage.setItem('imageType', imageType);
-    localStorage.setItem('saveLocation', saveLocation);
+function clampQuality(value) {
+    const parsed = Number.parseFloat(value);
+    if (Number.isNaN(parsed)) return DEFAULT_SETTINGS.jpegQuality;
+    return Math.min(1, Math.max(0.1, parsed));
+}
 
-    // Alert the user that settings have been saved
+async function migrateLegacyLocalStorageSettings() {
+    const alreadyMigrated = await chrome.storage.local.get({ settingsMigratedV1: false });
+    if (alreadyMigrated.settingsMigratedV1) {
+        return;
+    }
+
+    const legacyImageType = localStorage.getItem('imageType');
+    const legacySaveLocation = localStorage.getItem('saveLocation');
+
+    const nextSettings = {
+        settingsMigratedV1: true
+    };
+
+    if (legacyImageType && ['png', 'jpeg', 'webp'].includes(legacyImageType)) {
+        nextSettings.imageType = legacyImageType;
+    }
+
+    if (legacySaveLocation) {
+        nextSettings.saveLocation = legacySaveLocation;
+    }
+
+    await chrome.storage.local.set(nextSettings);
+}
+
+async function saveSettings() {
+    const imageTypeInput = document.querySelector('input[name="imageType"]:checked');
+    const settings = {
+        imageType: imageTypeInput ? imageTypeInput.value : DEFAULT_SETTINGS.imageType,
+        saveLocation: document.getElementById('saveLocation').value.trim(),
+        filenameTemplate: document.getElementById('filenameTemplate').value.trim() || DEFAULT_SETTINGS.filenameTemplate,
+        jpegQuality: clampQuality(document.getElementById('jpegQuality').value),
+        saveAs: document.getElementById('saveAs').checked
+    };
+
+    await chrome.storage.local.set(settings);
     alert('Settings saved!');
 }
 
-// Function to load settings from local storage
-function loadSettings() {
-    // Get the image type from local storage
-    const imageType = localStorage.getItem('imageType');
-    // Get the save location from local storage
-    const saveLocation = localStorage.getItem('saveLocation');
+async function loadSettings() {
+    await migrateLegacyLocalStorageSettings();
+    const settings = await chrome.storage.local.get(DEFAULT_SETTINGS);
 
-    // Update the form fields if settings are found
-    if (imageType) {
-        document.querySelector(`input[name="imageType"][value="${imageType}"]`).checked = true;
+    const imageTypeRadio = document.querySelector(`input[name="imageType"][value="${settings.imageType}"]`);
+    if (imageTypeRadio) {
+        imageTypeRadio.checked = true;
     }
-    if (saveLocation) {
-        document.getElementById('saveLocation').value = saveLocation;
-    }
+
+    document.getElementById('saveLocation').value = settings.saveLocation;
+    document.getElementById('filenameTemplate').value = settings.filenameTemplate;
+    document.getElementById('jpegQuality').value = settings.jpegQuality;
+    document.getElementById('saveAs').checked = Boolean(settings.saveAs);
 }
 
-// Event listener for when the DOM is fully loaded
-document.addEventListener('DOMContentLoaded', () => {
-    // Load the saved settings
-    loadSettings();
-
-    // Add event listener for the "Save Settings" button
-    const saveButton = document.getElementById('saveButton');
-    saveButton.addEventListener('click', saveSettings);
+document.addEventListener('DOMContentLoaded', async () => {
+    await loadSettings();
+    const saveButton = document.getElementById('saveSettings');
+    if (saveButton) {
+        saveButton.addEventListener('click', saveSettings);
+    }
 });
