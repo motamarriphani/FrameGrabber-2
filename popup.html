@@ -7,22 +7,36 @@
 <body>
     <h1>Frame Grabber Settings</h1>
 
-    <!-- Image Type Selection Section -->
     <section>
         <h2>Image Type</h2>
-        <input type="radio" id="jpeg" name="imageType" value="jpeg">
-        <label for="jpeg">JPEG</label><br>
-        <input type="radio" id="png" name="imageType" value="png">
-        <label for="png">PNG</label><br>
+        <label><input type="radio" id="png" name="imageType" value="png"> PNG</label>
+        <label><input type="radio" id="jpeg" name="imageType" value="jpeg"> JPEG</label>
+        <label><input type="radio" id="webp" name="imageType" value="webp"> WebP</label>
     </section>
 
-    <!-- Save Location Setting Section -->
     <section>
-        <h2>Save Location</h2>
-        <label for="saveLocation">Save Location:</label>
-        <input type="text" id="saveLocation" name="saveLocation">
+        <h2>Download Location</h2>
+        <label for="saveLocation">Subfolder in Downloads (optional)</label>
+        <input type="text" id="saveLocation" name="saveLocation" placeholder="FrameGrabber">
+        <label>
+            <input type="checkbox" id="saveAs" name="saveAs">
+            Ask where to save each capture
+        </label>
     </section>
-    
+
+    <section>
+        <h2>Filename</h2>
+        <label for="filenameTemplate">Template</label>
+        <input type="text" id="filenameTemplate" name="filenameTemplate" placeholder="{title}_frame_{time}">
+        <small>Available tokens: {title}, {time}, {date}</small>
+    </section>
+
+    <section>
+        <h2>JPEG Quality</h2>
+        <label for="jpegQuality">Value between 0.1 and 1.0</label>
+        <input type="number" id="jpegQuality" name="jpegQuality" min="0.1" max="1" step="0.1" value="0.92">
+    </section>
+
     <button id="saveSettings">Save Settings</button>
     <script src="popup.js"></script>
 </body>
